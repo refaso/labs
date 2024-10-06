@@ -9,6 +9,7 @@ int main()
 	setlocale(0, "");
 	int n, i, first_seven, elem, last_elem, summ = 0;
 	int m[N];
+
 	printf("Введите длину последовательности: \n");
 	scanf_s("%d", &n);
 
