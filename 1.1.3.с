@@ -1,35 +1,49 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <locale.h>
 #define N 100
 
+static void rez(int summ, int count)
+{
+	printf("\nСумма элементов между первым кратным 7 и последним элементом меньше своего индекса: %d\n", summ);
+	printf("Количество элементов: %d", count);
+}
+
+static void error()
+{
+	printf("Некорректный ввод!\n");
+	return 0;
+}
 
 int main()
 {
-	setlocale(0, "");
-	int n, i, first_seven, elem, last_elem, summ = 0;
+	int n, i, first_seven = -1, count = 0, elem, last_elem, summ = 0;
 	int m[N];
 
+	setlocale(0, "");
+
 	printf("Введите длину последовательности: \n");
-	scanf_s("%d", &n);
-
-	if (n <= 0 || n > 100000)
+	elem = scanf_s("%d", &n);
+	while (!elem)
 	{
-		printf("Неверный ввод!\n");
-		return 1;
-	}	
-	for (i = 0; i < n; ++i)
-	{
+		error();
+	}
 
+	if (n <= 0 || n > N) 
+	{
+		error();
+	}
+
+	for (i = 0; i < n; i++)
+	{
 		printf("Введите %d-й элемент: ", i + 1);
 		elem = scanf_s("%d", &m[i]);
 		while (!elem)
 		{
-			printf("Некорректный ввод! \n");
-			return 0;
+			error();
 		}
 	}
-	for (i = 0; i < n; ++i)
+
+	for (i = 0; i < n; i++)
 	{
 		if (m[i] % 7 == 0)
 		{
@@ -37,13 +51,21 @@ int main()
 			break;
 		}
 	}
-	for (last_elem = n; last_elem >= first_seven && m[last_elem] > last_elem; --last_elem);
-	
-	for (i = first_seven; i < last_elem; ++i) 
+
+	if (first_seven == -1)
 	{
-		summ += m[i];
+		rez(summ, count);
+		return 0;
 	}
 
-	printf("Сумма элементов между первым кратным 7 и последним элементом меньше своего индекса: %d \n", summ);
+	for (last_elem = n; last_elem >= first_seven && m[last_elem] > last_elem; -last_elem);
+
+	for (i = first_seven; i < last_elem; i++)
+	{
+		summ += m[i];
+		count++;
+	}
+
+	rez(summ, count);
 	return 0;
 }
