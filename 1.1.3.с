@@ -2,17 +2,9 @@
 #include <locale.h>
 #define N 100
 
-static void rez(int summ, int count)
-{
-	printf("\nСумма элементов между первым кратным 7 и последним элементом меньше своего индекса: %d\n", summ);
-	printf("Количество элементов: %d", count);
-}
+static void rez(int summ, int count);
+static void error();
 
-static void error()
-{
-	printf("Некорректный ввод!\n");
-	return 0;
-}
 
 int main()
 {
@@ -69,3 +61,16 @@ int main()
 	rez(summ, count);
 	return 0;
 }
+
+static void rez(int summ, int count)
+{
+	printf("\nСумма элементов между первым кратным 7 и последним элементом меньше своего индекса: %d\n", summ);
+	printf("Количество элементов: %d", count);
+}
+
+static void error()
+{
+	printf("Некорректный ввод!\n");
+	return 0;
+}
+
