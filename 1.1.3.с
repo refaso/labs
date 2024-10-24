@@ -50,7 +50,7 @@ int main()
 		return 0;
 	}
 
-	for (last_elem = n; last_elem >= first_seven && m[last_elem] > last_elem; -last_elem);
+	for (last_elem = n; last_elem >= first_seven && m[last_elem - 1] > last_elem - 1; -last_elem);
 
 	for (i = first_seven; i < last_elem; i++)
 	{
