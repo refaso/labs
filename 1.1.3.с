@@ -60,6 +60,11 @@ int main()
 		}
 	}
 
+	if (last_elem < first_seven) 
+	{
+		last_elem = n - 1;
+	}
+
 	for (i = first_seven; i <= last_elem; i++)
 	{
 		summ += m[i];
