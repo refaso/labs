@@ -11,7 +11,7 @@ int isColumn_better_then_one(int matrix[][MAX_COLS], int cols, int n);
 
 int main()
 {
-	int rows, cols, found_col = -1, newM;
+	int rows, cols, found_col = -1, newM, k;
 	int matrixA[MAX_ROWS][MAX_COLS];
 	int matrixB[MAX_ROWS][MAX_COLS];
 	setlocale(0, "");
@@ -42,7 +42,7 @@ int main()
 
 	newM = cols - 1;
 	for (int i = 0; i < rows; i++) {
-		int k = 0;
+		k = 0;
 		for (int j = 0; j < cols; j++) {
 			if (j != found_col) {
 				matrixB[i][k++] = matrixA[i][j];
