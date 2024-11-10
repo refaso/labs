@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#define MAX_ROWS 20
+#define MAX_COLS 20
+
+void input_matrix(int matrix[][MAX_COLS], int rows, int cols);
+void print_matrix(int matrix[][MAX_COLS], int rows, int cols);
+int isColumn_better_then_one(int matrix[][MAX_COLS], int cols, int n);
+	
+
+int main()
+{
+	int rows, cols, found_col = -1, newM;
+	int matrixA[MAX_ROWS][MAX_COLS];
+	int matrixB[MAX_ROWS][MAX_COLS];
+	setlocale(0, "");
+
+	printf("Введите размер матрицы A (N x M): \n");
+	scanf_s("%d%d", &rows, &cols);
+	if (rows > MAX_ROWS || rows < 1 || cols > MAX_COLS || cols < 1) {
+		printf("Размер матрицы должен быть от 1 до 20 \n");
+		return 1;
+	}
+	input_matrix(matrixA, rows, cols);
+
+	for (int column = cols - 1; column >= 0; column--) {
+		if (isColumn_better_then_one(matrixA, column, rows)) {
+			found_col = column;
+			break;
+		}
+	}
+
+	if (found_col == -1) {
+		printf("Не найдено подходящих столбцов для удаления \n");
+		return 1;
+	}
+
+	newM = cols - 1;
+	for (int i = 0; i < rows; i++) {
+		int k = 0;
+		for (int j = 0; j < cols; j++) {
+			if (j != found_col) {
+				matrixB[i][k++] = matrixA[i][j];
+			}
+		}
+	}
+
+	printf("Матрица B после преобразования:\n");
+	print_matrix(matrixB, rows, newM);
+
+	return 0;
+
+
+}
+
+void input_matrix(int matrix[][MAX_COLS], int rows, int cols)
+{	
+	printf("Введите элементы матрицы: \n");
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			scanf_s("%d", &matrix[i][j]);
+		}
+	}
+}
+
+void print_matrix(int matrix[][MAX_COLS], int rows, int cols)
+{
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			printf("%d ", matrix[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int isColumn_better_then_one(int matrix[][MAX_COLS], int cols, int n)
+{
+	if (matrix[0][cols] > 1) { 
+		for (int i = 1; i < n; i++) {
+			if (matrix[i][cols] <= matrix[i - 1][cols]) {
+				return 0;
+			}
+		}
+		return 1; 
+	}
+	return 0;
+}
+
