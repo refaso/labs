@@ -37,7 +37,7 @@ int main()
 
 	if (found_col == -1) {
 		printf("Не найдено подходящих столбцов для удаления \n");
-		return 1;
+		return 0;
 	}
 
 	newM = cols - 1;
