@@ -4,7 +4,7 @@
 #define MAX_ROWS 20
 #define MAX_COLS 20
 
-void input_matrix(int matrix[][MAX_COLS], int rows, int cols);
+int input_matrix(int matrix[][MAX_COLS], int rows, int cols);
 void print_matrix(int matrix[][MAX_COLS], int rows, int cols);
 int isColumn_better_then_one(int matrix[][MAX_COLS], int cols, int n);
 	
@@ -22,7 +22,11 @@ int main()
 		printf("Размер матрицы должен быть от 1 до 20 \n");
 		return 1;
 	}
-	input_matrix(matrixA, rows, cols);
+	
+	if (input_matrix(matrixA, rows, cols) == 0) {
+		printf("Элементы матрицы введены неккоректно!");
+		return 0;
+		} 
 
 	for (int column = cols - 1; column >= 0; column--) {
 		if (isColumn_better_then_one(matrixA, column, rows)) {
@@ -54,12 +58,16 @@ int main()
 
 }
 
-void input_matrix(int matrix[][MAX_COLS], int rows, int cols)
+int input_matrix(int matrix[][MAX_COLS], int rows, int cols)
 {	
+	int elem;
 	printf("Введите элементы матрицы: \n");
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < cols; j++) {
-			scanf_s("%d", &matrix[i][j]);
+			elem = scanf_s("%d", &matrix[i][j]);
+			while (!elem) {
+				return 0;
+			}
 		}
 	}
 }
