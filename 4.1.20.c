@@ -12,15 +12,15 @@ struct List {
 };
 
 // Функция для создания нового узла
-static struct List* createNode(int value) {
-    struct List* new_node = (struct List*)malloc(sizeof(struct List));
-    if (new_node == NULL) {
+static struct List* createList(int value) {
+    struct List* new_list = (struct List*)malloc(sizeof(struct List));
+    if (new_list == NULL) {
         printf("Ошибка выделения памяти\n");
         exit(EXIT_FAILURE);
     }
-    new_node->data = value;
-    new_node->Next = NULL;
-    return new_node;
+    new_list->data = value;
+    new_list->Next = NULL;
+    return new_list;
 }
 
 // Функция для извлечения отрицательных элементов и их сортировки
@@ -51,7 +51,7 @@ static struct List* extractAndSortNegatives(struct List** head_ref) {
 
     struct List* sorted_neg = NULL;
     while (neg_head != NULL) {
-        struct List* next_node = neg_head->Next;
+        struct List* next_list = neg_head->Next;
         struct List** insert_pos = &sorted_neg;
 
         while (*insert_pos != NULL && (*insert_pos)->data < neg_head->data) {
@@ -61,7 +61,7 @@ static struct List* extractAndSortNegatives(struct List** head_ref) {
         neg_head->Next = *insert_pos;
         *insert_pos = neg_head;
 
-        neg_head = next_node;
+        neg_head = next_list;
     }
 
     return sorted_neg;
@@ -112,18 +112,18 @@ int main() {
 
 // Функция для добавления элемента в конец списка
 static void appendToList(struct List** head_ref, int value) {
-    struct List* new_node = createNode(value);
+    struct List* new_list = createList(value);
     struct List* last = *head_ref;
 
     if (*head_ref == NULL) {
-        *head_ref = new_node;
+        *head_ref = new_list;
         return;
     }
 
     while (last->Next != NULL)
         last = last->Next;
 
-    last->Next = new_node;
+    last->Next = new_list;
 }
 
 // Функция для печати списка
