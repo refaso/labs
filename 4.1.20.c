@@ -5,13 +5,13 @@ static void appendToList(struct List** head_ref, int value);
 static void printList(struct List* head);
 
 
-// Структура узла списка
+// Структура списка
 struct List {
     int data;
     struct List* Next;
 };
 
-// Функция для создания нового узла
+// Функция для создания нового списка
 static struct List* createList(int value) {
     struct List* new_list = (struct List*)malloc(sizeof(struct List));
     if (new_list == NULL) {
