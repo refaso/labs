@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 
 // Прототипы функций
 static void appendToList(struct List** head_ref, int value);
@@ -8,137 +9,137 @@ static void printList(struct List* head);
 
 // Структура списка
 struct List {
-    int data;      // Поле для хранения данных
-    struct List* Next;  // Указатель на следующий элемент списка
+    int data; // Хранит данные
+    struct List* Next; // Указатель на следующий элемент
 };
 
-// Функция для создания нового списка
+// Функция для создания нового элемента списка
 static struct List* createList(int value) {
-    struct List* new_list = (struct List*)malloc(sizeof(struct List)); // Выделяем память под новый элемент списка
-    if (new_list == NULL) {  
-        printf("Ошибка выделения памяти\n");  // Сообщение об ошибке если память не была успешно выделена
-        return 0; // Завершаем выполнение программы
+    struct List* new_list = (struct List*)malloc(sizeof(struct List));
+    if (new_list == NULL) {
+        printf("Ошибка выделения памяти\n");
+        return NULL;
     }
-    new_list->data = value;  // Заполняем значение данных
-    new_list->Next = NULL;   // Устанавливаем указатель на следующий элемент в NULL
-    return new_list;         // Возвращаем созданный элемент списка
+    new_list->data = value;
+    new_list->Next = NULL;
+    return new_list;
 }
 
 // Функция для извлечения отрицательных элементов и их сортировки
 static struct List* extractAndSortNegatives(struct List** head_ref) {
-    struct List* neg_head = NULL;  // Указатель на голову нового списка с отрицательными элементами
-    struct List* current = *head_ref;  // Указатель на текущий элемент исходного списка
-    struct List* prev = NULL;  // Указатель на предыдущий элемент
+    struct List* neg_head = NULL; // Глава нового списка с отрицательными элементами
+    struct List* current = *head_ref; // Текущий элемент исходного списка
+    struct List* prev = NULL; // Предыдущий элемент
 
-    while (current != NULL) {  // Пока не достигли конца списка
-        if (current->data < 0) {  // Если текущий элемент отрицателен
-            if (prev == NULL) {  // Если это первый элемент списка
-                *head_ref = current->Next;  // Обновляем голову исходного списка
-            } else {  // Если это не первый элемент
-                prev->Next = current->Next;  // Связываем предыдущий элемент с следующим за текущим
+    while (current != NULL) {
+        if (current->data < 0) { // Обработка отрицательных элементов
+            if (prev == NULL) {
+                *head_ref = current->Next; // Обновляем голову исходного списка
+            }
+            else {
+                prev->Next = current->Next; // Связываем предыдущий элемент с следующим
             }
 
-            current->Next = neg_head;  // Добавляем текущий элемент в начало нового списка
-            neg_head = current;  // Обновляем голову нового списка
-
-            current = prev != NULL ? prev->Next : *head_ref;  // Переходим к следующему элементу
-        } else {  // Если текущий элемент не отрицателен
-            prev = current;  // Сохраняем ссылку на предыдущий элемент
-            current = current->Next;  // Переходим к следующему элементу
+            current->Next = neg_head; // Добавляем текущий элемент в начало нового списка
+            neg_head = current; // Обновляем голову нового списка
+            current = prev != NULL ? prev->Next : *head_ref; // Переход к следующему элементу
+        }
+        else {
+            prev = current; // Сохраняем ссылку на текущий элемент
+            current = current->Next; // Переходим к следующему элементу
         }
     }
 
-    struct List* sorted_neg = NULL;  // Указатель на голову отсортированного списка
-    while (neg_head != NULL) {  // Пока не обработаны все отрицательные элементы
-        struct List* next_list = neg_head->Next;  // Сохраняем ссылку на следующий элемент
-        struct List** insert_pos = &sorted_neg;  // Начальная позиция для вставки
+    struct List* sorted_neg = NULL; // Голова отсортированного списка
+    while (neg_head != NULL) {
+        struct List* next_list = neg_head->Next; // Сохраняем следующий элемент
+        struct List** insert_pos = &sorted_neg; // Начальная позиция для вставки
 
-        while (*insert_pos != NULL && (*insert_pos)->data < neg_head->data) {  // Ищем подходящее место для вставки
-            insert_pos = &((*insert_pos)->Next);  // Двигаемся дальше по списку
+        while (*insert_pos != NULL && (*insert_pos)->data < neg_head->data) {
+            insert_pos = &((*insert_pos)->Next); // Ищем подходящее место для вставки
         }
 
-        neg_head->Next = *insert_pos;  // Вставляем элемент на правильную позицию
-        *insert_pos = neg_head;  // Обновляем указатель на вставленный элемент
-
-        neg_head = next_list;  // Переходим к следующему отрицательному элементу
+        neg_head->Next = *insert_pos; // Вставляем элемент на правильную позицию
+        *insert_pos = neg_head; // Обновляем указатель на вставленный элемент
+        neg_head = next_list; // Переходим к следующему отрицательному элементу
     }
 
-    return sorted_neg;  // Возвращаем отсортированный список отрицательных элементов
+    return sorted_neg; // Возвращаем отсортированный список
 }
 
 int main() {
-    setlocale(0, "");  
-    int num_elements;  // Количество элементов в списке
-    struct List* temp;  // Временная переменная для освобождения памяти
-    int value;  // Переменная для хранения введенного значения
+    setlocale(0, "");
+    struct List* list_head = NULL; // Голова исходного списка
+    char input[20]; // Буфер для ввода строки
+    int value; // Хранит введенное значение
 
-    // Ввод элементов списка
-    struct List* list_head = NULL;  // Голова исходного списка
-    
-    printf("Введите количество элементов списка: ");  // Запрашиваем количество элементов
-    if (scanf_s("%d", &num_elements) != 1 || num_elements <= 0) {  // Проверка корректности ввода
-        printf("Некорректный ввод! Количество элементов должно быть положительным целым числом\n");  // Сообщение об ошибке
-        return 0;  // Завершаем выполнение программы
-    }
+    printf("Введите элементы списка (для завершения введите '.'): \n");
 
-    for (int i = 0; i < num_elements; ++i) {  // Цикл для ввода значений
-        printf("Введите %d-й элемент: ", i + 1);  // Запрашиваем очередной элемент
-        if (scanf_s("%d", &value) != 1) {  // Проверка корректности ввода
-            printf("Некорректный ввод! Элемент должен быть целым числом!\n");  // Сообщение об ошибке
-            return 0;  // Завершаем выполнение программы
+    while (1) {
+        printf("Введите элемент: ");
+        scanf_s("%s", input, (unsigned)_countof(input)); // Чтение строки с указанием размера буфера
+
+        if (strcmp(input, ".") == 0) {
+            break; // Завершение ввода при введении точки
         }
-        appendToList(&list_head, value);  // Добавляем элемент в список
+
+        if (sscanf_s(input, "%d", &value) != 1) { // Преобразуем строку в число
+            printf("Некорректный ввод! Введите целое число или '.' для завершения.\n");
+            continue; // Запрашиваем ввод повторно
+        }
+
+        appendToList(&list_head, value); // Добавляем элемент в список
     }
 
-    // Печать исходного списка
     printf("Исходный список:\n");
-    printList(list_head);  // Вызываем функциюю для печати списка
+    printList(list_head); // Печать исходного списка
 
-    // Извлечение и сортировка отрицательных элементов
-    struct List* negative_sorted_list = extractAndSortNegatives(&list_head);  // Получаем отсортированный список отрицательных элементов
+    struct List* negative_sorted_list = extractAndSortNegatives(&list_head); // Получаем отсортированный список отрицательных элементов
 
-    // Печать результата
     printf("Отрицательные элементы, отсортированные по возрастанию:\n");
-    printList(negative_sorted_list);  // Печать отсортированных отрицательных элементов
+    printList(negative_sorted_list); // Печать отсортированных отрицательных элементов
+
+    printf("Измененный исходный список (без отрицательных элементов):\n");
+    printList(list_head); // Печать измененного списка
 
     // Освобождение памяти
-    
-    while (list_head != NULL) {  // Освобождаем память исходного списка
+    struct List* temp;
+    while (list_head != NULL) {
         temp = list_head;
         list_head = list_head->Next;
         free(temp);
     }
 
-    while (negative_sorted_list != NULL) {  // Освобождаем память отсортированного списка
+    while (negative_sorted_list != NULL) {
         temp = negative_sorted_list;
         negative_sorted_list = negative_sorted_list->Next;
         free(temp);
     }
 
-    return 0;  // Завершение программы
+    return 0; // Завершение программы
 }
 
 // Функция для добавления элемента в конец списка
 static void appendToList(struct List** head_ref, int value) {
-    struct List* new_list = createList(value);  // Создаём новый элемент списка
-    struct List* last = *head_ref;  // Указатель на последний элемент списка
+    struct List* new_list = createList(value);
+    struct List* last = *head_ref;
 
-    if (*head_ref == NULL) {  // Если список пустой
-        *head_ref = new_list;  // Новый элемент становится головой списка
-        return;  // Выход из функции
+    if (*head_ref == NULL) {
+        *head_ref = new_list; // Новый элемент становится головой списка
+        return;
     }
 
-    while (last->Next != NULL)  // Идем до конца списка
-        last = last->Next;  // Переходим к следующему элементу
+    while (last->Next != NULL) // Идем до конца списка
+        last = last->Next;
 
-    last->Next = new_list;  // Добавляем новый элемент в конец списка
+    last->Next = new_list; // Добавляем новый элемент в конец списка
 }
 
 // Функция для печати списка
 static void printList(struct List* head) {
-    while (head != NULL) {  // Пока не достигнут конец списка
-        printf("%d ", head->data);  // Выводим значение текущего элемента
-        head = head->Next;  // Переходим к следующему элементу
+    while (head != NULL) {
+        printf("%d ", head->data); // Выводим значение текущего элемента
+        head = head->Next; // Переходим к следующему элементу
     }
-    printf("\n");  // Перевод строки после завершения печати
+    printf("\n"); 
 }
