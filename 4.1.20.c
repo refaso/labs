@@ -68,10 +68,10 @@ static struct List* extractAndSortNegatives(struct List** head_ref) {
 }
 
 int main() {
-    setlocale(0, "");
     struct List* list_head = NULL; // Голова исходного списка
     char input[20]; // Буфер для ввода строки
     int value; // Хранит введенное значение
+    setlocale(0, "");
 
     printf("Введите элементы списка (для завершения введите '.'): \n");
 
@@ -118,7 +118,7 @@ int main() {
         free(temp);
     }
 
-    return 0; 
+    return 0;
 }
 
 // Функция для добавления элемента в конец списка
@@ -143,5 +143,5 @@ static void printList(struct List* head) {
         printf("%d ", head->data); // Выводим значение текущего элемента
         head = head->Next; // Переходим к следующему элементу
     }
-    printf("\n"); 
+    printf("\n");
 }
