@@ -69,39 +69,50 @@ static struct List* extractAndSortNegatives(struct List** head_ref) {
 
 int main() {
     struct List* list_head = NULL; // Голова исходного списка
-    char input[20]; // Буфер для ввода строки
     int value; // Хранит введенное значение
+    int count_minus = 0, count_plus =  0; 
     setlocale(0, "");
 
-    printf("Введите элементы списка (для завершения введите '.'): \n");
+    printf("Введите элементы списка (типа int) \nДля завершения введите любой символ (.):\n");
+
 
     while (1) {
+        int value;
         printf("Введите элемент: ");
-        // Считываем строку с указанием размера буфера
-        scanf_s("%19s", input, (unsigned)sizeof(input));
 
-        if (strcmp(input, ".") == 0) {
-            break; // Завершение ввода при введении точки
+        // Считываем целое число
+        if (scanf_s("%d", &value) == 1) {
+            if (value < 0) {
+                count_minus++;
+            }
+            if (value > 0) {
+                count_plus++;
+            }
+            appendToList(&list_head, value); // Если введено число, добавляем его в список
         }
-
-        // Используем sscanf_s для считывания целого числа
-        if (sscanf_s(input, "%d", &value) != 1) { // Преобразуем строку в число
-            printf("Некорректный ввод! Введите целое число или '.' для завершения.\n");
-            continue; // Запрашиваем ввод повторно
+        else {
+            scanf_s("%*s"); // Очистка некорректного ввода
+            break; // Завершение ввода при вводе не чисел
         }
-
-        appendToList(&list_head, value); // Добавляем элемент в список
     }
 
     printf("Исходный список:\n");
     printList(list_head); // Печать исходного списка
 
     struct List* negative_sorted_list = extractAndSortNegatives(&list_head); // Получаем отсортированный список отрицательных элементов
-
-    printf("Отрицательные элементы, отсортированные по возрастанию:\n");
+    if (count_minus == 0) {
+        printf("Нет отрицательных элементов\n");
+    }
+    else {
+        printf("Отрицательные элементы, отсортированные по возрастанию:\n");
+    }
     printList(negative_sorted_list); // Печать отсортированных отрицательных элементов
-
-    printf("Измененный исходный список (без отрицательных элементов):\n");
+    if (count_plus == 0) {
+        printf("Нет положительных элементов");
+    }
+    else {
+        printf("Измененный исходный список (без отрицательных элементов):\n");
+    }
     printList(list_head); // Печать измененного списка
 
     // Освобождение памяти
