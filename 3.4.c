@@ -2,7 +2,7 @@
 #include <locale.h>
 
 #define MAX_IDENTIFIERS 36
-#define MAX_LENGTH 13  // 12 символов 
+#define MAX_LENGTH 12+1  
 
 static void extractID(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* count) {
     char c;
@@ -10,30 +10,31 @@ static void extractID(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* count)
 
     while ((c = getchar()) != '.' && *count < MAX_IDENTIFIERS) {
         if (c == '\n') {
-            continue; // Игнорируем перенос строки
+            continue;
         }
         if (c == ' ') {
             if (j > 0) {
-                identifiers[*count][j] = '\0';  // Завершение идентификатора
+                identifiers[*count][j] = '\0';
                 (*count)++;
-                j = 0; // Сброс длины идентификатора
+                j = 0;
             }
         }
         else {
-            if (j < MAX_LENGTH - 1) {  // Проверка длины идентификатора
+            if (j < MAX_LENGTH - 1) {
                 identifiers[*count][j++] = c;
             }
         }
     }
-    if (j > 0) {  // Добавляем последний идентификатор, если есть
+    if (j > 0) {
         identifiers[*count][j] = '\0';
         (*count)++;
     }
 }
 
 static void printUpperID(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int count) {
+    int hasUpperID = 0;
     for (int i = 0; i < count; i++) {
-        int isUpper = 1;  // Предполагаем, что идентификатор состоит из заглавных букв
+        int isUpper = 1;
         for (int k = 0; identifiers[i][k] != '\0'; k++) {
             if (identifiers[i][k] < 'A' || identifiers[i][k] > 'Z') {
                 isUpper = 0;
@@ -42,18 +43,22 @@ static void printUpperID(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int coun
         }
         if (isUpper) {
             printf("%s\n", identifiers[i]);
+            hasUpperID = 1;
         }
+    }
+    if (!hasUpperID) {
+        printf("нет слов в верхнем регистре\n"); 
     }
 }
 
 int main() {
     int count = 0;
-    char identifiers[MAX_IDENTIFIERS][MAX_LENGTH]; // Объявляем массив для идентификаторов
+    char identifiers[MAX_IDENTIFIERS][MAX_LENGTH];
     setlocale(0, "");
 
     printf("Введите последовательность идентификаторов, оканчивающуюся точкой:\n");
-    extractID(identifiers, &count); // Передаем массив в функцию
-    printUpperID(identifiers, count); // Выводим заглавные идентификаторы
+    extractID(identifiers, &count);
+    printUpperID(identifiers, count);
 
     return 0;
 }
