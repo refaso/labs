@@ -8,7 +8,7 @@ int isValidChar(char c) {
     return (c >= 'A' && c <= 'Z') || (c == '_') || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z');
 }
 
-int isValidIdentifier(char identifier[]) {
+int isValidID(char identifier[]) {
     if (identifier[0] == '\0') {
         return 0;
     }
@@ -25,12 +25,12 @@ int isValidIdentifier(char identifier[]) {
     return 1;
 }
 
-int findIDs(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* exceedsLength) {
+int findIDs(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* better_length) {
     int count = 0;
     int length = 0;
     char c;
 
-    *exceedsLength = 0;
+    *better_length = 0;
 
     while ((c = getchar()) != '.' && count < MAX_IDENTIFIERS) {
         if (c == '\n' || c == '\r') {
@@ -41,12 +41,12 @@ int findIDs(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* exceedsLength) {
             if (length > 0) {
                 identifiers[count][length] = '\0';
 
-                if (length >= MAX_LENGTH - 1 && *exceedsLength == 0) {
+                if (length >= MAX_LENGTH - 1 && *better_length == 0) {
                     printf("Идентификатор(ы) превышает максимальную длину %d символов\n", MAX_LENGTH - 1);
-                    *exceedsLength = 1;
+                    *better_length = 1;
                 }
 
-                if (isValidIdentifier(identifiers[count])) {
+                if (isValidID(identifiers[count])) {
                     count++;
                 }
 
@@ -57,9 +57,9 @@ int findIDs(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* exceedsLength) {
             if (length < MAX_LENGTH - 1) {
                 identifiers[count][length++] = c;
             }
-            else if (*exceedsLength == 0) {
+            else if (*better_length == 0) {
                 printf("Идентификатор(ы) превышает максимальную длину %d символов\n", MAX_LENGTH - 1);
-                *exceedsLength = 1;
+                *better_length = 1;
             }
         }
     }
@@ -71,12 +71,12 @@ int findIDs(char identifiers[MAX_IDENTIFIERS][MAX_LENGTH], int* exceedsLength) {
 
     if (length > 0) {
         identifiers[count][length] = '\0';
-        if (length >= MAX_LENGTH - 1 && *exceedsLength == 0) {
+        if (length >= MAX_LENGTH - 1 && *better_length == 0) {
             printf("Идентификатор(ы) превышает максимальную длину %d символов\n", MAX_LENGTH - 1);
-            *exceedsLength = 1;
+            *better_length = 1;
         }
 
-        if (isValidIdentifier(identifiers[count])) {
+        if (isValidID(identifiers[count])) {
             count++;
         }
     }
@@ -120,10 +120,10 @@ int main() {
     setlocale(0, "");
 
     printf("Введите последовательность идентификаторов, оканчивающуюся точкой:\n");
-    int exceedsLength;
-    int count = findIDs(identifiers, &exceedsLength);
+    int better_length;
+    int count = findIDs(identifiers, &better_length);
 
-    if (exceedsLength || count < 0) {
+    if (better_length || count < 0) {
         return 0;
     }
 
